@@ -31,7 +31,7 @@ import xmlrpclib
 
 parser = argparse.ArgumentParser()
 parser.add_argument("action", help="specify XML file name or queue for action")
-parser.add_argument("--server", action="store", default="https://neos-server.org:3333", help="URL to NEOS Server XML-RPC interface")
+parser.add_argument("--server", default="https://neos-server.org:3333", help="URL to NEOS Server XML-RPC interface")
 args = parser.parse_args()
 
 neos = xmlrpclib.ServerProxy(args.server)
