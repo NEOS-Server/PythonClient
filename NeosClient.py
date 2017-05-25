@@ -25,6 +25,7 @@ Python source code - Python 2.x XML-RPC client for NEOS Server
 """
 
 import argparse
+import os
 import sys
 import time
 import xmlrpclib
@@ -32,6 +33,8 @@ import xmlrpclib
 parser = argparse.ArgumentParser()
 parser.add_argument("action", help="specify XML file name or queue for action")
 parser.add_argument("--server", default="https://neos-server.org:3333", help="URL to NEOS Server XML-RPC interface")
+parser.add_argument("--username", default=os.environ.get("NEOS_USERNAME", None), help="username for NEOS Server user account")
+parser.add_argument("--password", default=os.environ.get("NEOS_PASSWORD", None), help="password for NEOS Server user account")
 args = parser.parse_args()
 
 neos = xmlrpclib.ServerProxy(args.server)
@@ -56,7 +59,10 @@ else:
     except IOError as e:
         sys.stderr.write("I/O error(%d): %s\n" % (e.errno, e.strerror))
         sys.exit(1)
-    (jobNumber, password) = neos.submitJob(xml)
+    if args.username and args.password:
+        (jobNumber, password) = neos.authenticatedSubmitJob(xml, args.username, args.password)
+    else:
+        (jobNumber, password) = neos.submitJob(xml)
     sys.stdout.write("Job number = %d\nJob password = %s\n" % (jobNumber, password))
     if jobNumber == 0:
         sys.stderr.write("NEOS Server error: %s\n" % password)
