@@ -21,14 +21,17 @@
 # SOFTWARE.
 
 """
-Python source code - Python 2.x XML-RPC client for NEOS Server
+Python source code - Python XML-RPC client for NEOS Server
 """
 
 import argparse
 import os
 import sys
 import time
-import xmlrpclib
+try:
+  import xmlrpc.client as xmlrpclib
+except ImportError:
+  import xmlrpclib
 
 parser = argparse.ArgumentParser()
 parser.add_argument("action", help="specify XML file name or queue for action")
